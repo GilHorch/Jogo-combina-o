@@ -7,7 +7,8 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; }
         .game-board { display: grid; grid-template-columns: repeat(4, 100px); gap: 10px; justify-content: center; }
-        .card { width: 100px; height: 100px; background: gray; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .card { width: 100px; height: 100px; background: gray; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+        .card img { width: 100%; height: 100%; position: absolute; }
         .hidden { visibility: hidden; }
     </style>
 </head>
@@ -16,8 +17,17 @@
     <p>Tempo restante: <span id="timer">60</span> segundos</p>
     <div class="game-board" id="gameBoard"></div>
     <script>
-        // Lista de imagens para o jogo
-        const images = ["img1.jpg", "img2.jpg", "img3.jpg", "img4.jpg", "img5.jpg", "img6.jpg", "img7.jpg", "img8.jpg"];
+        // Lista de imagens com IDs fixos
+        const images = [
+            { id: "1", src: "img1.jpg" },
+            { id: "2", src: "img2.jpg" },
+            { id: "3", src: "img3.jpg" },
+            { id: "4", src: "img4.jpg" },
+            { id: "5", src: "img5.jpg" },
+            { id: "6", src: "img6.jpg" },
+            { id: "7", src: "img7.jpg" },
+            { id: "8", src: "img8.jpg" }
+        ];
         let cards = [...images, ...images]; // Duplica as imagens para criar pares
         let selectedCards = []; // Armazena as cartas selecionadas temporariamente
         let matchedCards = []; // Armazena os pares encontrados
@@ -35,11 +45,25 @@
             const board = document.getElementById("gameBoard");
             board.innerHTML = "";
 
-            cards.forEach((img, index) => {
+            cards.forEach((cardData, index) => {
                 const card = document.createElement("div"); // Cria um elemento div para cada carta
                 card.classList.add("card"); // Adiciona a classe CSS
-                card.dataset.id = img; // Define o ID da carta com o nome da imagem
+                card.dataset.id = cardData.id; // Define o ID fixo da carta
                 card.dataset.index = index; // Define o índice da carta
+                
+                // Cria a imagem do verso
+                const backImage = document.createElement("img");
+                backImage.src = "back.jpg"; // Imagem do verso da carta
+                backImage.classList.add("back");
+                
+                // Cria a imagem da carta (oculta inicialmente)
+                const frontImage = document.createElement("img");
+                frontImage.src = cardData.src;
+                frontImage.classList.add("front");
+                frontImage.style.display = "none";
+                
+                card.appendChild(backImage);
+                card.appendChild(frontImage);
                 card.addEventListener("click", flipCard); // Adiciona o evento de clique
                 board.appendChild(card); // Adiciona a carta ao tabuleiro
             });
@@ -49,8 +73,8 @@
         // Função para virar a carta
         function flipCard() {
             if (selectedCards.length < 2 && !selectedCards.includes(this)) { // Verifica se menos de duas cartas estão selecionadas
-                this.style.backgroundImage = `url(${this.dataset.id})`; // Define a imagem de fundo
-                this.style.backgroundSize = "cover";
+                this.querySelector(".back").style.display = "none"; // Esconde a imagem do verso
+                this.querySelector(".front").style.display = "block"; // Mostra a imagem da carta
                 selectedCards.push(this); // Adiciona a carta à lista de selecionadas
             }
 
@@ -67,8 +91,10 @@
                 card2.classList.add("hidden"); // Esconde a segunda carta
                 matchedCards.push(card1.dataset.id); // Adiciona ao conjunto de pares encontrados
             } else {
-                card1.style.background = "gray"; // Reseta a aparência da primeira carta
-                card2.style.background = "gray"; // Reseta a aparência da segunda carta
+                card1.querySelector(".back").style.display = "block"; // Mostra o verso da primeira carta
+                card1.querySelector(".front").style.display = "none"; // Esconde a imagem da primeira carta
+                card2.querySelector(".back").style.display = "block"; // Mostra o verso da segunda carta
+                card2.querySelector(".front").style.display = "none"; // Esconde a imagem da segunda carta
             }
             selectedCards = []; // Reseta as cartas selecionadas
         }
