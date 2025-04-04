@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Memória</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .game-board { display: grid; grid-template-columns: repeat(4, 100px); gap: 10px; justify-content: center; }
+        .card { width: 100px; height: 100px; background: gray; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .hidden { visibility: hidden; }
+    </style>
+</head>
+<body>
+    <h1>Jogo da Memória</h1>
+    <p>Tempo restante: <span id="timer">60</span> segundos</p>
+    <div class="game-board" id="gameBoard"></div>
+    <script>
+        // Lista de imagens para o jogo
+        const images = ["img1.jpg", "img2.jpg", "img3.jpg", "img4.jpg", "img5.jpg", "img6.jpg", "img7.jpg", "img8.jpg"];
+        let cards = [...images, ...images]; // Duplica as imagens para criar pares
+        let selectedCards = []; // Armazena as cartas selecionadas temporariamente
+        let matchedCards = []; // Armazena os pares encontrados
+        let timeLeft = 60; // Tempo total do jogo em segundos
+        let timerInterval; // Variável para armazenar o temporizador
+
+        // Função para embaralhar as cartas
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        // Função para criar o tabuleiro do jogo
+        function createBoard() {
+            cards = shuffle(cards); // Embaralha as cartas
+            const board = document.getElementById("gameBoard");
+            board.innerHTML = "";
+
+            cards.forEach((img, index) => {
+                const card = document.createElement("div"); // Cria um elemento div para cada carta
+                card.classList.add("card"); // Adiciona a classe CSS
+                card.dataset.id = img; // Define o ID da carta com o nome da imagem
+                card.dataset.index = index; // Define o índice da carta
+                card.addEventListener("click", flipCard); // Adiciona o evento de clique
+                board.appendChild(card); // Adiciona a carta ao tabuleiro
+            });
+            startTimer(); // Inicia o temporizador
+        }
+
+        // Função para virar a carta
+        function flipCard() {
+            if (selectedCards.length < 2 && !selectedCards.includes(this)) { // Verifica se menos de duas cartas estão selecionadas
+                this.style.backgroundImage = `url(${this.dataset.id})`; // Define a imagem de fundo
+                this.style.backgroundSize = "cover";
+                selectedCards.push(this); // Adiciona a carta à lista de selecionadas
+            }
+
+            if (selectedCards.length === 2) { // Se duas cartas foram selecionadas
+                setTimeout(checkMatch, 500); // Aguarda 500ms antes de verificar se é um par
+            }
+        }
+
+        // Função para verificar se as cartas formam um par
+        function checkMatch() {
+            const [card1, card2] = selectedCards;
+            if (card1.dataset.id === card2.dataset.id) { // Se as cartas têm o mesmo ID
+                card1.classList.add("hidden"); // Esconde a primeira carta
+                card2.classList.add("hidden"); // Esconde a segunda carta
+                matchedCards.push(card1.dataset.id); // Adiciona ao conjunto de pares encontrados
+            } else {
+                card1.style.background = "gray"; // Reseta a aparência da primeira carta
+                card2.style.background = "gray"; // Reseta a aparência da segunda carta
+            }
+            selectedCards = []; // Reseta as cartas selecionadas
+        }
+
+        // Função para iniciar o temporizador
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--; // Reduz o tempo restante
+                    document.getElementById("timer").textContent = timeLeft; // Atualiza a exibição do tempo
+                } else {
+                    clearInterval(timerInterval); // Para o temporizador
+                    alert("Tempo esgotado! Reiniciando o jogo."); // Exibe mensagem de tempo esgotado
+                    location.reload(); // Recarrega a página para reiniciar o jogo
+                }
+            }, 1000); // Atualiza o temporizador a cada segundo
+        }
+
+        createBoard(); // Chama a função para iniciar o jogo
+    </script>
+</body>
+</html>
