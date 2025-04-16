@@ -71,7 +71,7 @@
             { id: "9", src: "18.png" },
             { id: "10", src: "20.png" }
         ];
-        let cards = [imagesA,imagesB]; // Cria pares com as cartas
+        let cards = [...imagesA,...imagesB]; // Cria pares com as cartas
         let selectedCards = []; // Armazena as cartas selecionadas temporariamente
         let matchedCards = []; // Armazena os pares encontrados
         let timeLeft = 60; // Tempo total do jogo em segundos
