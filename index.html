@@ -1,34 +1,77 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogo da Memória</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        .game-board { display: grid; grid-template-columns: repeat(4, 100px); gap: 10px; justify-content: center; }
-        .card { width: 100px; height: 100px; background: gray; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
-        .card img { width: 100%; height: 100%; position: absolute; }
-        .hidden { visibility: hidden; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .card {
+            width: 100px;
+            height: 100px;
+            background: gray;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
+
+        .hidden {
+            visibility: hidden;
+        }
     </style>
 </head>
+
 <body>
     <h1>Jogo da Memória</h1>
     <p>Tempo restante: <span id="timer">60</span> segundos</p>
     <div class="game-board" id="gameBoard"></div>
     <script>
         // Lista de imagens com IDs fixos
-        const images = [
-            { id: "1", src: "cao1.jpeg" },
-            { id: "2", src: "cao2.jpeg" },
-            { id: "3", src: "img3.jpg" },
-            { id: "4", src: "img4.jpg" },
-            { id: "5", src: "img5.jpg" },
-            { id: "6", src: "img6.jpg" },
-            { id: "7", src: "img7.jpg" },
-            { id: "8", src: "img8.jpg" }
+        const imagesA = [
+            { id: "1", src: "1.png" },
+            { id: "2", src: "3.png" },
+            { id: "3", src: "5.png" },
+            { id: "4", src: "7.png" },
+            { id: "5", src: "9.png" },
+            { id: "6", src: "11.png" },
+            { id: "7", src: "13.png" },
+            { id: "8", src: "15.png" },
+            { id: "9", src: "17.png" },
+            { id: "10", src: "19.png" }
         ];
-        let cards = [...images, ...images]; // Duplica as imagens para criar pares
+        const imagesB = [
+            { id: "1", src: "2.png" },
+            { id: "2", src: "4.png" },
+            { id: "3", src: "6.png" },
+            { id: "4", src: "8.png" },
+            { id: "5", src: "10.png" },
+            { id: "6", src: "12.png" },
+            { id: "7", src: "14.png" },
+            { id: "8", src: "16.png" },
+            { id: "9", src: "18.png" },
+            { id: "10", src: "20.png" }
+        ];
+        let cards = [...imagesA, ...imagesB]; // Cria pares com as cartas
         let selectedCards = []; // Armazena as cartas selecionadas temporariamente
         let matchedCards = []; // Armazena os pares encontrados
         let timeLeft = 60; // Tempo total do jogo em segundos
@@ -50,18 +93,18 @@
                 card.classList.add("card"); // Adiciona a classe CSS
                 card.dataset.id = cardData.id; // Define o ID fixo da carta
                 card.dataset.index = index; // Define o índice da carta
-                
+
                 // Cria a imagem do verso
                 const backImage = document.createElement("img");
                 backImage.src = "back.jpg"; // Imagem do verso da carta
                 backImage.classList.add("back");
-                
+
                 // Cria a imagem da carta (oculta inicialmente)
                 const frontImage = document.createElement("img");
                 frontImage.src = cardData.src;
                 frontImage.classList.add("front");
                 frontImage.style.display = "none";
-                
+
                 card.appendChild(backImage);
                 card.appendChild(frontImage);
                 card.addEventListener("click", flipCard); // Adiciona o evento de clique
@@ -116,4 +159,5 @@
         createBoard(); // Chama a função para iniciar o jogo
     </script>
 </body>
+
 </html>
